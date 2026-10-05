@@ -1,6 +1,6 @@
 class DonasiRepository {
   constructor() {
-    this.donasiList = []; // Penyimpanan sementara di memori
+    this.donasiList = [];
   }
 
   async simpan(donasi) {
@@ -8,12 +8,8 @@ class DonasiRepository {
     return donasi;
   }
 
-  async cariSemua() {
+  async ambilSemua() {
     return this.donasiList;
-  }
-
-  async cariById(id) {
-    return this.donasiList.find(item => item.getId() === id);
   }
 }
 

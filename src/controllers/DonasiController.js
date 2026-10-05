@@ -1,13 +1,13 @@
 const donasiService = require('../services/DonasiService');
 
-class donasiController {
+class DonasiController {
   async catatDonasi(req, res) {
     try {
-      const hasil = await donasiService.tambahDonasi(req.body);
+      const { id, nominal, tanggal, kanal } = req.body;
+      const donasiBaru = await donasiService.catatDonasi({ id, nominal, tanggal, kanal });
       return res.status(201).json({
         status: 'success',
-        message: 'Donasi berhasil dicatat dan siap direkonsiliasi',
-        data: hasil.toJSON()
+        data: donasiBaru
       });
     } catch (error) {
       return res.status(400).json({
@@ -22,12 +22,12 @@ class donasiController {
       const data = await donasiService.ambilSemuaDonasi();
       return res.status(200).json({
         status: 'success',
-        data
+        data: data
       });
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        message: 'Terjadi kesalahan pada server'
+        message: error.message
       });
     }
   }
