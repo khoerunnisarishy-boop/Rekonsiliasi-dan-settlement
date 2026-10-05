@@ -10,25 +10,30 @@ class DonasiController {
         data: donasiBaru
       });
     } catch (error) {
-      return res.status(400).json({
-        status: 'fail',
-        message: error.message
-      });
+      return res.status(400).json({ status: 'fail', message: error.message });
     }
   }
 
   async getAllDonasi(req, res) {
     try {
       const data = await donasiService.ambilSemuaDonasi();
+      return res.status(200).json({ status: 'success', data: data });
+    } catch (error) {
+      return res.status(500).json({ status: 'error', message: error.message });
+    }
+  }
+
+  async rekonsiliasiData(req, res) {
+    try {
+      const { mutasiBank } = req.body;
+      const hasil = await donasiService.prosesRekonsiliasi(mutasiBank);
       return res.status(200).json({
         status: 'success',
-        data: data
+        message: 'Proses rekonsiliasi selesai',
+        data: hasil
       });
     } catch (error) {
-      return res.status(500).json({
-        status: 'error',
-        message: error.message
-      });
+      return res.status(500).json({ status: 'error', message: error.message });
     }
   }
 }
