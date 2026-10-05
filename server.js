@@ -1,5 +1,5 @@
 const express = require('express');
-const donasiController = require('./src/controllers/DonasiController');
+const donasiController = require('./src/controllers/DonasiController.js');
 
 const app = express();
 app.use(express.json());

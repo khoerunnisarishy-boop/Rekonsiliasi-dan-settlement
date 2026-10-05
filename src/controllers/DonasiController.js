@@ -1,6 +1,6 @@
 const donasiService = require('../services/DonasiService');
 
-class DonasiController {
+class donasiController {
   async catatDonasi(req, res) {
     try {
       const hasil = await donasiService.tambahDonasi(req.body);
