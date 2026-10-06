@@ -1,36 +1,32 @@
 const donasiRepository = require('../repositories/DonasiRepository');
-const Donasi = require('../models/Donasi');
 
 class DonasiService {
-  async catatDonasi(data) {
-    const { id, nominal, tanggal, kanal } = data;
-    const donasiBaru = new Donasi(id, nominal, tanggal, kanal);
-    return await donasiRepository.simpan(donasiBaru);
-  }
+    // Service untuk mengambil semua donasi
+    async getAllDonasi() {
+        return await donasiRepository.findAll();
+    }
 
-  async ambilSemuaDonasi() {
-    return await donasiRepository.ambilSemua();
-  }
+    // Service untuk mengambil donasi berdasarkan ID
+    async getDonasiById(id) {
+        const donasi = await donasiRepository.findById(id);
+        if (!donasi) {
+            throw new Error('Data donasi tidak ditemukan');
+        }
+        return donasi;
+    }
 
-  async prosesRekonsiliasi(dataMutasiBank) {
-    const semuaDonasi = await donasiRepository.ambilSemua();
+    // Service untuk membuat donasi baru
+    async createDonasi(data) {
+        if (!data.kode_donasi || !data.nominal) {
+            throw new Error('Kode donasi dan nominal wajib diisi!');
+        }
+        return await donasiRepository.create(data);
+    }
 
-    const hasilRekonsiliasi = semuaDonasi.map((donasi) => {
-      const cocok = dataMutasiBank.find(
-        (mutasi) => mutasi.nominal === donasi.nominal && mutasi.tanggal === donasi.tanggal
-      );
-
-      if (cocok) {
-        donasi.status = 'MATCH';
-      } else {
-        donasi.status = 'UNMATCH';
-      }
-
-      return donasi;
-    });
-
-    return hasilRekonsiliasi;
-  }
+    // Service untuk mengambil daftar transaksi selisih (UNMATCH)
+    async getUnmatchedRekonsiliasi() {
+        return await donasiRepository.findUnmatched();
+    }
 }
 
 module.exports = new DonasiService();

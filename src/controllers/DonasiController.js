@@ -1,41 +1,57 @@
 const donasiService = require('../services/DonasiService');
 
 class DonasiController {
-  async catatDonasi(req, res) {
-    try {
-      const { id, nominal, tanggal, kanal } = req.body;
-      const donasiBaru = await donasiService.catatDonasi({ id, nominal, tanggal, kanal });
-      return res.status(201).json({
-        status: 'success',
-        data: donasiBaru
-      });
-    } catch (error) {
-      return res.status(400).json({ status: 'fail', message: error.message });
+    // GET /api/v1/donasi
+    async getAll(req, res) {
+        try {
+            const data = await donasiService.getAllDonasi();
+            res.status(200).json({
+                success: true,
+                message: 'Berhasil mengambil data donasi',
+                data: data
+            });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
     }
-  }
 
-  async getAllDonasi(req, res) {
-    try {
-      const data = await donasiService.ambilSemuaDonasi();
-      return res.status(200).json({ status: 'success', data: data });
-    } catch (error) {
-      return res.status(500).json({ status: 'error', message: error.message });
+    // GET /api/v1/donasi/:id
+    async getById(req, res) {
+        try {
+            const data = await donasiService.getDonasiById(req.params.id);
+            res.status(200).json({ success: true, data: data });
+        } catch (error) {
+            res.status(404).json({ success: false, message: error.message });
+        }
     }
-  }
 
-  async rekonsiliasiData(req, res) {
-    try {
-      const { mutasiBank } = req.body;
-      const hasil = await donasiService.prosesRekonsiliasi(mutasiBank);
-      return res.status(200).json({
-        status: 'success',
-        message: 'Proses rekonsiliasi selesai',
-        data: hasil
-      });
-    } catch (error) {
-      return res.status(500).json({ status: 'error', message: error.message });
+    // POST /api/v1/donasi
+    async create(req, res) {
+        try {
+            const result = await donasiService.createDonasi(req.body);
+            res.status(201).json({
+                success: true,
+                message: 'Donasi berhasil ditambahkan',
+                data: result
+            });
+        } catch (error) {
+            res.status(400).json({ success: false, message: error.message });
+        }
     }
-  }
+
+    // GET /api/v1/rekonsiliasi/selisih
+    async getSelisih(req, res) {
+        try {
+            const data = await donasiService.getUnmatchedRekonsiliasi();
+            res.status(200).json({
+                success: true,
+                message: 'Berhasil mengambil daftar selisih rekonsiliasi',
+                data: data
+            });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
 }
 
 module.exports = new DonasiController();
